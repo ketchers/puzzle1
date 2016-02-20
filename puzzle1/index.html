@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>A sliding tile puzzle.</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <script src = 'js/example.js' defer></script>
+    </head>
+    <body>
+        <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+
+        <!-- Add your site or application content here -->
+
+		<h1 id = "result" align = 'center'></h1>
+
+		<div id="example" class="main">
+    		<canvas id="image" width="350px" height="350px"></canvas>
+  		</div>
+		<div id="slider">
+		<p>How many pieces do you want in your puzzle?</p>
+	    <form>
+	      <label>2x2</label>
+	      <input onchange = 'document.getElementById("hard").innerHTML = "12x12<br> <br> &nbsp; Number of tiles = " + this.value + "x" + this.value + " = " + this.value * this.value' type="range" id="scale" value="4" min="2" max="12" step="1">
+	      <label id = "hard">12x12<br> <br> &nbsp; Number of tiles = 4x4 = 16</label>
+	    </form>
+		<br>
+		</div>
+			
+		<button type = 'button' onclick = 'setBackground();setData();drawPuzzle();'>Create Tiles</button>
+		<button type = 'button' onclick = 'shuffle();'>Shuffle</button>
+		<br>
+		<br>
+		<label>Want a different image? (A square image woorks best.) <input onchange = "imageChosen()" id = "imagechoice" type="file" accept=".png,.jpg,.gif"></label>  
+		<!--
+		<br>
+		<br>
+		<label>Image from the web: <input onchange = "imageChosenWeb()" size = 80 id = "imagechoicefromweb" type="url" accept=".png,.jpg,.gif" value = "http://facstaff.susqu.edu/brakke/aux/gyroid/gyroid-C3.2.gif"></label> (This will not work.)
+		-->
+		
+	
+		<h1>Debug:</h1>
+		<p id = 'debug'>Debug Messages Here</p>
+    	<p id = 'debug1'>Debug Messages Here</p>
+    </body>
+</html>
