@@ -11,6 +11,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        <link rel = "stylesheet" href = "css/style.css">
         <script src = 'js/example.js' defer></script>
     </head>
     <body>
@@ -19,28 +20,31 @@
         <![endif]-->
 
         <!-- Add your site or application content here -->
-
-		<h1 id = "result" align = 'center'></h1>
-
+      
+        <div id="slider">
+            Choose difficulty: 2x2 up to 12x12
+            <form>
+                <input onchange = 'document.getElementById("hard").innerHTML = this.value + "x" + this.value + " Pieces: " + ((this.value * this.value) - 1)' type="range" id="scale" value="4" min="2" max="12" step="1">  
+                <label id = "hard">4x4 Pieces: 15</label>     
+            </form>
+        </div>
 		<div id="example" class="main">
     		<canvas id="image" width="350px" height="350px"></canvas>
   		</div>
-		<div id="slider">
-		<p>How many pieces do you want in your puzzle?</p>
-	    <form>
-	      <label>2x2</label>
-	      <input onchange = 'document.getElementById("hard").innerHTML = "12x12<br> <br> &nbsp; Number of tiles = " + this.value + "x" + this.value + " = " + this.value * this.value' type="range" id="scale" value="4" min="2" max="12" step="1">
-	      <label id = "hard">12x12<br> <br> &nbsp; Number of tiles = 4x4 = 16</label>
-	    </form>
-		<br>
-		</div>
-			
-		<button type = 'button' onclick = 'setBackground();setData();drawPuzzle();'>Create Tiles</button>
-		<button type = 'button' onclick = 'shuffle();'>Shuffle</button>
-		<br>
-		<br>
-		<label>Want a different image? (A square image woorks best.) <input onchange = "imageChosen()" id = "imagechoice" type="file" accept=".png,.jpg,.gif"></label>  
-		<!--
+        <div id = "buttons">
+		  <button type = 'button' onclick = 'setBackground();setData();drawPuzzle();'>Create Tiles</button>
+		  <button type = 'button' onclick = 'shuffle();'>Shuffle</button>
+            <input onchange = "imageChosen()" id = "imagechoice" type="file" accept=".png,.jpg,.gif"> 
+        </div>
+        <section id = "resources">
+        <ul>
+            <li><a href = "pdf/permutations%20of%20the%20puzzle.pdf">Group Theory</a></li>    
+        </ul>
+        
+        </section>
+            
+            
+        <!--
 		<br>
 		<br>
 		<label>Image from the web: <input onchange = "imageChosenWeb()" size = 80 id = "imagechoicefromweb" type="url" accept=".png,.jpg,.gif" value = "http://facstaff.susqu.edu/brakke/aux/gyroid/gyroid-C3.2.gif"></label> (This will not work.)

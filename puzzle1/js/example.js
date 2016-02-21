@@ -3,9 +3,9 @@ var ctx = c.getContext('2d');
 var boardSize = document.getElementById('image').width;
 var img = new Image();
 
-ctx.fillStyle = '#646464'
+ctx.fillStyle = '#646464';
 ctx.strokeStyle = '#969696';
-var imgData = ctx.createImageData(boardSize,boardSize);
+var imgData = ctx.createImageData(boardSize, boardSize);
 var tiles = [];
 var scale = 0;
 var tileSize = boardSize / scale;
@@ -13,15 +13,17 @@ var debug = "";
 var debug1 = "";
 var blank = 0;
 
+
+
 img.src = "img/sunday.png";
 
-function imageChosen () {
+function imageChosen() {
 	var input = document.getElementById("imagechoice");
 	var fReader = new FileReader();
 	fReader.readAsDataURL(input.files[0]);
-	fReader.onloadend = function(event){
+	fReader.onloadend = function(event) {
 		img.src = event.target.result;
-	}
+	};
 	setData();
 	drawPuzzle();
 }
@@ -39,6 +41,22 @@ function imageChosenWeb () {
 
 img.addEventListener('load', function() {setData();drawPuzzle();}, false);
 
+// This builds a tile from the current canvas int the (x,y) position where pair(x,y) = i
+function tile(i) {
+	this.im = ctx.getImageData( getX(i) * tileSize, getY(i) * tileSize, tileSize, tileSize);
+	this.x0 = getX(i);
+	this.y0 = getY(i);
+	this.x = this.x0; // will change as piece moves
+	this.y = this.y0; // will change as piece moves
+	this.idx = i;
+	this.inplace = this.x0 == this.x && this.y0 == this.y;
+	this.badness = Math.abs(this.x0 - this.x) + Math.abs(this.y0 - this.y);
+	this.toString = function() {
+		return "idx: " + this.idx + " x0: " + this.x0 + " y0: " + this.y0 + " x:" + this.x + " y:" + this.y;
+	}
+}
+
+
 var Loc = {x: 0, y: 0};
 
 function getLoc(e) {
@@ -47,7 +65,7 @@ function getLoc(e) {
     Loc.x = Math.floor(mouseX / c.width * scale);
 	Loc.y = Math.floor(mouseY / c.height * scale);	
     debug = "(" + Loc.x + ", " + Loc.y + ")" ;
-	debug += "<br> Internal postion = (" + tiles[pair(Loc.x,Loc.y)].x + ", " + tiles[pair(Loc.x,Loc.y)].y + ")";
+	debug += "<br> Internal postion = (" + (tiles[pair(Loc.x, Loc.y)]).x + ", " + (tiles[pair(Loc.x, Loc.y)]).y + ")";
 	debug += "<br> Initial position = (" + tiles[pair(Loc.x,Loc.y)].x0 + ", " + tiles[pair(Loc.x,Loc.y)].y0 + ")";
 	debug += "<br> Index = " + tiles[pair(Loc.x,Loc.y)].idx;
     document.getElementById("debug").innerHTML = debug;
@@ -57,20 +75,12 @@ function getLoc(e) {
 document.getElementById('image').addEventListener('mousemove', getLoc, false);
 		
 
-document.getElementById('image').addEventListener('click', 
-	function() {
-		movePiece(Loc.x,Loc.y);
-		if (checkAns() == true) {
-			e = document.getElementById("result")
-			e.innerHTML = "You Solved It!";
-			e.style.color = '#FF0000';
-			e.style.fontSize = 'x-large';
-		}
-		debug1 = "Click on: " + "(" + Loc.x + ", " + Loc.y + ")" ;
-    	document.getElementById("debug1").innerHTML = debug1;
-  	},
-  	false);
-
+function clickHandler() {
+    movePiece(Loc.x, Loc.y);
+    checkAns();
+    debug1 = "Click on: " + "(" + Loc.x + ", " + Loc.y + ")" ;
+    document.getElementById("debug1").innerHTML = debug1;
+}
 
 document.getElementById('image').addEventListener('touchstart', 
 	function() {
@@ -95,22 +105,6 @@ function setBackground () {
 	}
 }
 
-
-// This builds a tile from the current canvas int the (x,y) position where pair(x,y) = i
-function tile(i) {
-	this.im = ctx.getImageData( getX(i) * tileSize, getY(i) * tileSize, tileSize, tileSize);
-	this.x0 = getX(i);
-	this.y0 = getY(i);
-	this.x = this.x0 // will change as piece moves
-	this.y = this.y0; // will change as piece moves
-	this.idx = i;
-	this.inplace = this.x0 == this.x && this.y0 == this.y;
-	this.badness = Math.abs(this.x0 - this.x) + Math.abs(this.y0 - this.y);
-	this.toString = function() {
-		return "idx: " + this.idx + " x0: " + this.x0 + " y0: " + this.y0 + " x:" + this.x + " y:" + this.y;
-	}
-}
-
 function setData () {
 	scale = document.getElementById('scale').value;
 	tileSize = boardSize / scale;
@@ -131,10 +125,9 @@ function setData () {
 		tiles[i] = new tile(i);
 	}
 	clearCtx();
-	e = document.getElementById("result")
-	e.innerHTML = "Solve It!";
-	e.style.color = '#AA00AA';
-	e.style.fontSize = 'x-large';
+    
+    document.getElementById('image').addEventListener('click', clickHandler, false);
+
 }
 
 // This is how we associate an array index to a pair. (x,y) <-> (column, row)
@@ -250,5 +243,19 @@ function checkAns() {
 		if (tiles[i].idx != i)
 			test = false && test;
 	}
-	return test;
+	if (test === true) {
+            ctx.save();
+            ctx.translate(175, 175);
+            ctx.rotate(-Math.PI / 4);
+            // Create gradient
+            var grd = ctx.createRadialGradient(0, 0, 5, 0, 0, 175); 
+            grd.addColorStop(0, "red");
+            grd.addColorStop(1, "white");
+            ctx.fillStyle = grd;
+            ctx.font = "70px Sans Serif";
+            ctx.textAlign = "center";
+            ctx.fillText("Solved", 0, 20);
+            ctx.restore();
+            document.getElementById('image').removeEventListener('click', clickHandler);
+    } 
 }
