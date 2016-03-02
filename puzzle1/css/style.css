@@ -2,6 +2,11 @@ body {
     font-family: sans-serif;
 }
 
-#image {
-    background-color: rgb(170, 170, 0);
+
+div#example, div#slider, div#buttons {
+	display: inline-block;
+	width: 350px;
+	border: ridge;
 }
+
+

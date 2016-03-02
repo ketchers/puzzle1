@@ -41,9 +41,25 @@ function imageChosenWeb () {
 
 img.addEventListener('load', function() {setData();drawPuzzle();}, false);
 
+function aveMod(a, n, m) {
+   	var ave = 0;
+   	for (var i = m; i < a.length; i += n) 
+    	ave = ave + a[i] / (a.length / n);
+   	return Math.floor(ave);
+}
+
+function getAveRGB(a) {
+	return {red:aveMod(a, 4, 0), green:aveMod(a, 4, 1), blue:aveMod(a, 4, 2), alpha:aveMod(a, 4, 3)};
+} 
+
 // This builds a tile from the current canvas int the (x,y) position where pair(x,y) = i
 function tile(i) {
 	this.im = ctx.getImageData( getX(i) * tileSize, getY(i) * tileSize, tileSize, tileSize);
+	var aveColor = getAveRGB(this.im.data);
+	this.red = aveColor.red;
+	this.green = aveColor.green;
+	this.blue = aveColor.blue;
+	this.alpha = aveColor.alpha;
 	this.x0 = getX(i);
 	this.y0 = getY(i);
 	this.x = this.x0; // will change as piece moves
@@ -51,9 +67,33 @@ function tile(i) {
 	this.idx = i;
 	this.inplace = this.x0 == this.x && this.y0 == this.y;
 	this.badness = Math.abs(this.x0 - this.x) + Math.abs(this.y0 - this.y);
+
 	this.toString = function() {
 		return "idx: " + this.idx + " x0: " + this.x0 + " y0: " + this.y0 + " x:" + this.x + " y:" + this.y;
 	}
+
+
+	function mod(n,m) {
+		var s = n % m;
+		return s > 0 ? s : m - s;
+	}
+
+    this.draw = function() {
+    	ctx.putImageData(this.im, this.x * tileSize, this.y * tileSize);
+    	// Add number to tile
+    	var ft = Math.floor(tileSize / 3) + "px Sans Serif";
+    	ctx.save();
+    	ctx.globalAlpha = 0.5;
+    	var txtColor = 'rgb(' + mod(-100 + this.red, 256) + ', ' + mod(-200 + this.green, 256) + ', ' 
+    		+ mod(-100 + this.blue, 256) + ')';
+    	console.log(this.red +',' + this.green +',' + this.blue)
+    	console.log(this.idx + ":" + txtColor);
+    	ctx.fillStyle = txtColor;
+		ctx.font = ft;
+    	ctx.textAlign = "center";
+    	ctx.fillText(this.idx, tileSize * (1 / 2 + this.x), tileSize * (1/6 + 1 / 2 + this.y));
+    	ctx.restore();
+    }
 }
 
 
@@ -68,12 +108,17 @@ function getLoc(e) {
 	debug += "<br> Internal postion = (" + (tiles[pair(Loc.x, Loc.y)]).x + ", " + (tiles[pair(Loc.x, Loc.y)]).y + ")";
 	debug += "<br> Initial position = (" + tiles[pair(Loc.x,Loc.y)].x0 + ", " + tiles[pair(Loc.x,Loc.y)].y0 + ")";
 	debug += "<br> Index = " + tiles[pair(Loc.x,Loc.y)].idx;
-    document.getElementById("debug").innerHTML = debug;
-  	
+	document.getElementById("debug").innerHTML = debug;
+}
+
+function getPageLoc(e) {
+	debug1 = "Location in the page: <br>"
+	debug1 += "(" + e.pageX + ", " + e.pageY + ")";
+    document.getElementById("debug1").innerHTML = debug1;
 }
 
 document.getElementById('image').addEventListener('mousemove', getLoc, false);
-		
+document.getElementById('body').addEventListener('mousemove', getPageLoc, false);
 
 function clickHandler() {
     movePiece(Loc.x, Loc.y);
@@ -119,6 +164,7 @@ function setData () {
 	ctx.fillRect(0, 0, tileSize, tileSize);
 	ctx.fillStyle = '#646464'
 
+	
 	// Get an internal copy to manipulate
 	imgData = ctx.getImageData(0, 0, boardSize, boardSize);
 	for (var i = 0; i < scale * scale; i++) {
@@ -168,8 +214,10 @@ function swapTile(j,i) {
 	tiles[j] = tmp;
 	tiles[j].x = getX(j);
 	tiles[j].y = getY(j);
-	ctx.putImageData(tiles[j].im, getX(j) * tileSize, getY(j) * tileSize);
-	ctx.putImageData(tiles[i].im, getX(i) * tileSize, getY(i) * tileSize);
+	//ctx.putImageData(tiles[j].im, getX(j) * tileSize, getY(j) * tileSize);
+	//ctx.putImageData(tiles[i].im, getX(i) * tileSize, getY(i) * tileSize);
+	tiles[i].draw();
+	tiles[j].draw();
 }
 
 // move the (i,j)th piece if it is next to blank
@@ -226,7 +274,8 @@ function shuffle () {
 function drawPuzzle() {
 	for (var i = 0; i < scale; i++) {
 		for (var j = 0; j < scale; j++) {
-			ctx.putImageData(tiles[pair(i,j)].im, i * tileSize, j * tileSize);
+			// ctx.putImageData(tiles[pair(i,j)].im, i * tileSize, j * tileSize);
+			tiles[pair(i,j)].draw();
 		}
 	}
 }

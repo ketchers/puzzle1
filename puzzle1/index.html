@@ -14,33 +14,34 @@
         <link rel = "stylesheet" href = "css/style.css">
         <script src = 'js/example.js' defer></script>
     </head>
-    <body>
+    <body id = "body">
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
         <!-- Add your site or application content here -->
       
-        <div id="slider">
+        <div align="center" id="slider">
             Choose difficulty: 2x2 up to 12x12
             <form>
-                <input onchange = 'document.getElementById("hard").innerHTML = this.value + "x" + this.value + " Pieces: " + ((this.value * this.value) - 1)' type="range" id="scale" value="4" min="2" max="12" step="1">  
-                <label id = "hard">4x4 Pieces: 15</label>     
+                <input onchange = 'document.getElementById("hard").innerHTML = " (" + this.value + "x" + this.value + " Pieces: " + ((this.value * this.value) - 1) + ")";setBackground();setData();drawPuzzle()' type="range" id="scale" value="4" min="2" max="12" step="1">  
+                <label id = "hard"> (4x4 Pieces: 15)</label>     
             </form>
         </div>
+        <br>
 		<div id="example" class="main">
     		<canvas id="image" width="350px" height="350px"></canvas>
   		</div>
+  		<br>
         <div id = "buttons">
-		  <button type = 'button' onclick = 'setBackground();setData();drawPuzzle();'>Create Tiles</button>
+		  <!-- <button type = 'button' onclick = 'setBackground();setData();drawPuzzle();'>Create Tiles</button> -->
 		  <button type = 'button' onclick = 'shuffle();'>Shuffle</button>
             <input onchange = "imageChosen()" id = "imagechoice" type="file" accept=".png,.jpg,.gif"> 
         </div>
         <section id = "resources">
         <ul>
             <li><a href = "pdf/permutations%20of%20the%20puzzle.pdf">Group Theory</a></li>    
-        </ul>
-        
+        </ul>    
         </section>
             
             
@@ -50,9 +51,10 @@
 		<label>Image from the web: <input onchange = "imageChosenWeb()" size = 80 id = "imagechoicefromweb" type="url" accept=".png,.jpg,.gif" value = "http://facstaff.susqu.edu/brakke/aux/gyroid/gyroid-C3.2.gif"></label> (This will not work.)
 		-->
 		
-	
-		<h1>Debug:</h1>
-		<p id = 'debug'>Debug Messages Here</p>
-    	<p id = 'debug1'>Debug Messages Here</p>
+		<section>
+			<h1>Debug:</h1>
+			<p id = 'debug'>Debug Messages Here</p>
+	    	<p id = 'debug1'>Debug Messages Here</p>
+    	</section>
     </body>
 </html>
