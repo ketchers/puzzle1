@@ -1,0 +1,10 @@
+canvas#cvs {
+    border-style: solid;
+    border-width: 3;
+    display: inline-block;
+}
+
+div#debugMessages {
+    display: inline-block;
+    border-style: solid;
+}

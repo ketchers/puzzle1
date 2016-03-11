@@ -1,8 +1,8 @@
-var c = document.getElementById("image");
+var c = document.getElementById("canvas");
 var ctx = c.getContext('2d');
-var boardSize = document.getElementById('image').width;
+var boardSize = document.getElementById('canvas').width;
 var img = new Image();
-var tileSize = boardSize / document.getElementById('scale').value;
+var tileSize = boardSize / document.getElementById('dimention').value;
 img.src = "img/sunday.png";
 img.addEventListener('load', drawImage1, false);
 

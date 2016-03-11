@@ -1,12 +1,65 @@
+* {
+    box-sizing: border-box;
+    margin: 0px;
+    padding 0px;
+}
+
 body {
     font-family: sans-serif;
 }
 
-
-div#example, div#slider, div#buttons {
-	display: inline-block;
-	width: 350px;
-	border: ridge;
+div#example,
+div#slider {
+    display: inline-block;
+    width: 354px;
+    border-style: ridge;
+    border-width: 2;
 }
 
+div.buttons {
+    display: block;
+    width: 354px;
+    border: ridge;
+    padding: 5px;
+}
 
+#dimentionval {
+    width: 15%;
+    text-align: center;
+}
+
+input[type="range"] {
+    -webkit-appearance: none !important;
+    background-color: rgba(40, 40, 40, .5);
+    width: 55%;
+    height: 3px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    width: 10px;
+    height: 15px;
+    border-radius: 10px;
+    background: radial-gradient(white 5%, black 80%);
+}
+
+.btn a {
+    color: rgb(180, 220, 180);
+    margin: 0% 5%;
+    font-size: 200%;
+    display: inline-block;
+    background-color: rgba(110, 60, 160, .5);
+    padding: 0px 5px;
+    text-decoration: none;
+    border-radius: 10px;
+}
+
+.btn a:hover {
+    background-color: rgb(140, 90, 200);
+}
+
+.btn a.active {
+    font-weight: bold;
+    background-color: rgba(200, 140, 200, 0.6);
+    color: rgb(50, 50, 50);
+}
