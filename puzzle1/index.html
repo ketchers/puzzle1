@@ -17,6 +17,7 @@
 
     <div class="btn">
         <a href="http://codepen.io/collection/neYGjq/" target="_blank">CodePen code</a>
+        <a href="pdf/permutations%20of%20the%20puzzle.pdf">Related Math!</a>
     </div>
 
     <div align="center" id="slider">
@@ -37,19 +38,14 @@
         <input onchange="imageChosen()" id="imagechoice" type="file" accept=".png,.jpg,.gif">
     </div>
     <div class="buttons">
-        <button type='button' onclick='setBackground();setData();drawPuzzle();'>Create Tiles</button>
+        <button type='button' onclick='setBackground();setData();drawPuzzle();'>Reset</button>
         <button type='button' onclick='bfsSolve();'>BFS Solver</button>
-
     </div>
     <div id="divSoln">
-        <textarea cols="40" rows="3" class="soln" id="Soln"></textarea>
+        <p height="50px" class="soln" id="Soln"></p>
         <button id="solveBtn">Solve It!</button>
     </div>
-    <section id="resources">
-        <ul>
-            <li><a href="pdf/permutations%20of%20the%20puzzle.pdf">Group Theory</a></li>
-        </ul>
-    </section>
+
 
 
     <!-- Can't use web image 
@@ -60,12 +56,13 @@
     </label>
     -->
 
-
+    <!--
     <section>
         <h1>Debug:</h1>
         <p id='debug'>Debug Messages Here</p>
         <p id='debug1'>Debug Messages Here</p>
     </section>
+    -->
 </body>
 
 </html>

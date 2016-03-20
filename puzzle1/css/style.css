@@ -12,8 +12,9 @@ body {
 div {
     display: block;
     width: 354px;
-    border-style: ridge;
-    border-width: 2;
+    padding: 2px;
+    /* border-style: ridge;
+     border-width: 2; */
 }
 
 div.buttons {
@@ -53,13 +54,17 @@ input[type="range"]::-webkit-slider-thumb {
 .btn a {
     color: rgb(180, 220, 180);
     margin: 0 auto;
+    width: 100%;
     text-align: center;
-    font-size: 200%;
-    display: block;
+    font-size: 150%;
+    display: inline-block;
     background-color: rgba(110, 60, 160, .5);
     padding: 0px 5px;
     text-decoration: none;
     border-radius: 10px;
+    border-width: 1px;
+    border-style: ridge;
+    border-color: rgba(200, 200, 200, .5);
 }
 
 .btn a:hover {

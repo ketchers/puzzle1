@@ -160,6 +160,7 @@ function getLoc(e) {
     document.getElementById("debug").innerHTML = debug;
 }
 
+/*
 function getPageLoc(e) {
     debug1 = "Location in the page: <br>"
     debug1 += "(" + e.pageX + ", " + e.pageY + ")";
@@ -168,7 +169,7 @@ function getPageLoc(e) {
 
 document.getElementById('canvas').addEventListener('mousemove', getLoc, false);
 document.getElementById('body').addEventListener('mousemove', getPageLoc, false);
-
+*/
 function clickHandler() {
     movePiece(mouseX, mouseY);
     checkAns();
@@ -234,6 +235,8 @@ function neighbors() {
 }
 
 function setData() {
+    Soln.innerHTML = "";
+    Soln.value = "";
     dimention = document.getElementById('dimention').value;
     puzSize = dimention * dimention;
     tileSize = boardSize / dimention;
@@ -335,6 +338,7 @@ function movePiece(i, j) {
 function shuffle() {
     cnt = 0;
     Soln.innerHTML = "";
+    Soln.value = "";
     var count = 0;
     for (var i = 1; i < dimention * dimention; i++) {
         var j = Math.ceil(Math.random() * i);
