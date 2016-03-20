@@ -10,8 +10,7 @@
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <link rel="stylesheet" href="css/style.css">
-    <script src='js/example.js' defer></script>
-    <script src='js/solver.js' defer></script>
+    <script src='js/main.js' defer></script>
 </head>
 
 <body id="body">
@@ -27,11 +26,11 @@
             <input type='text' id='dimentionval' value="3x3" readonly>
         </form>
     </div>
-    <br>
+
     <div id="example" class="main">
         <canvas id="canvas" width="350px" height="350px"></canvas>
     </div>
-    <br>
+
     <div class="buttons">
         <!-- <button type = 'button' onclick = 'setBackground();setData();drawPuzzle();'>Create Tiles</button> -->
         <button type='button' onclick='shuffle();'>Shuffle</button>
@@ -42,7 +41,10 @@
         <button type='button' onclick='bfsSolve();'>BFS Solver</button>
 
     </div>
-
+    <div id="divSoln">
+        <textarea cols="40" rows="3" class="soln" id="Soln"></textarea>
+        <button id="solveBtn">Solve It!</button>
+    </div>
     <section id="resources">
         <ul>
             <li><a href="pdf/permutations%20of%20the%20puzzle.pdf">Group Theory</a></li>

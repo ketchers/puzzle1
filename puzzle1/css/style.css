@@ -2,24 +2,31 @@
     box-sizing: border-box;
     margin: 0px;
     padding 0px;
+    border-radius: 10px;
 }
 
 body {
     font-family: sans-serif;
 }
 
-div#example,
-div#slider {
-    display: inline-block;
+div {
+    display: block;
     width: 354px;
     border-style: ridge;
     border-width: 2;
 }
 
 div.buttons {
+    padding: 5px;
+}
+
+textarea {
     display: block;
-    width: 354px;
-    border: ridge;
+    margin: 0 auto;
+}
+
+#solveBtn {
+    visibility: hidden;
     padding: 5px;
 }
 
@@ -45,9 +52,10 @@ input[type="range"]::-webkit-slider-thumb {
 
 .btn a {
     color: rgb(180, 220, 180);
-    margin: 0% 5%;
+    margin: 0 auto;
+    text-align: center;
     font-size: 200%;
-    display: inline-block;
+    display: block;
     background-color: rgba(110, 60, 160, .5);
     padding: 0px 5px;
     text-decoration: none;

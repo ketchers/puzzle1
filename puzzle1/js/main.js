@@ -1,4 +1,7 @@
 var c = document.getElementById("canvas");
+var solveBtn = document.getElementById("solveBtn");
+var Soln = document.getElementById("Soln");
+
 var ctx = c.getContext('2d');
 var boardSize = c.width;
 var img = new Image();
@@ -15,8 +18,19 @@ var debug = "";
 var debug1 = "";
 var blank = 0;
 
+var startNode = [];
+
+
+var solution = [];
+var soln = "";
+var timer;
+
 var mouseX;
 var mouseY;
+
+var cnt = 0;
+
+solveBtn.addEventListener('click', solveBtnHandler, false);
 
 // A nbrMap[i] = [j,k,l,m] where j,k,l,m are adjacent (if i is a corner just [j,k], if i on edge and not corner just [j,k,l]). 
 var nbrMap = {};
@@ -51,6 +65,27 @@ img.addEventListener('load', function () {
     setData();
     drawPuzzle();
 }, false);
+
+function solveBtnHandler() {
+
+    solveBtn.style.visibility = 'hidden';
+
+    var ln = soln.length;
+
+
+    function move() {
+        var node = tilesToArray();
+        var idx = node.indexOf(soln[cnt]);
+        movePiece(getX(idx), getY(idx));
+        cnt++;
+        if (cnt == ln) {
+            clearInterval(timer);
+            checkAns();
+        }
+    }
+
+    var timer = setInterval(move, 300);
+}
 
 function aveMod(a, n, m) {
     var ave = 0;
@@ -207,6 +242,7 @@ function setData() {
     ctx.drawImage(img, 0, 0, boardSize, boardSize);
     setBackground();
     blank = 0;
+    cnt = 0;
 
     // Make 0th rect blank
     ctx.fillStyle = '#222222'
@@ -297,6 +333,8 @@ function movePiece(i, j) {
 
 // This is a silly shuffle, but it garantees that the puzzle s solvable.
 function shuffle() {
+    cnt = 0;
+    Soln.innerHTML = "";
     var count = 0;
     for (var i = 1; i < dimention * dimention; i++) {
         var j = Math.ceil(Math.random() * i);
@@ -348,85 +386,92 @@ function checkAns() {
     }
 }
 
-////////////////////////////// Solver code ////////////////////////////
+// Common and quick code related to solver is here
 
 
 
 
-function nodeswap(a, i, j) {
-    var b = a.slice(0, a.length);
-    var tmp = b[i];
-    b[i] = b[j];
-    b[j] = tmp;
-    return b;
-}
-
-function ckNode(node) {
-    for (var i = 0; i < puzSize; i++) {
-        if (node[i] != i)
-            return false;
-    }
-    return true;
-}
-
-function bfs() {
-    var Node = tilesToArray();
-    var nodeQueue = [Node];
-    var backTrackMap = {}; // To find solution
-    backTrackMap[Node] = null; // Just the start node traces back to null
-
-    // Repeatdly remove the first node from the queue
-    var count = 0;
-    while (nodeQueue.length != 0) {
-        count++;
-        if (count % 1000 == 0)
-            console.log(count);
-        Node = nodeQueue.shift(); // In first pass this is just the start node.
-
-        // Check if we are done
-        if (ckNode(Node)) {
-            console.log("Sucsess! Total Nodes Checked: " + count);
-            // console.log(backTrackMap);
-            return backTrackMap;
-        }
-
-        //Enqueue neighbors
-        var zeroIdx = Node.indexOf(0);
-        var nbrs = nbrMap[zeroIdx];
-
-        for (var i = 0; i < nbrs.length; i++) {
-            var k = nbrs[i];
-            var tmpNode = nodeswap(Node, zeroIdx, k);
-            if (!(tmpNode in backTrackMap)) {
-                backTrackMap[tmpNode] = Node;
-                nodeQueue.push(tmpNode);
-            } else { // Already in backTrack
-                // console.log(newNode + " is already in backTrackMap");
-            }
-        }
-    }
-}
 
 function getNodes(backTrackMap, startNode) {
-    var Node = startNode;
-    var solutionPath = [Node];
+    var node = startNode;
+    var solutionPath = [node];
     while (true) {
-        var newNode = backTrackMap[Node];
+        var newNode = backTrackMap[node];
         if (newNode != null) {
             solutionPath.push(newNode);
-            Node = newNode;
+            node = newNode;
         } else
             break;
     }
     return solutionPath;
 }
 
+function findSoln(solutionPath) {
+    solution = [];
+    soln = "";
+    var result;
+    for (var i = solutionPath.length - 1; i > 0; i--) {
+        dex = solutionPath.length - (i + 1);
+        result = solutionPath[i][solutionPath[i - 1].indexOf(0)];
+        solution[dex] = result;
+        soln = soln + " " + result;
+    }
+    return solution;
+}
+
 function bfsSolve() {
-    var startNode = [];
+
+    // var backTrackMap = bfs();
+    startWorker();
+
+}
+
+// A* will be in a worker
+
+// BFS will be in a worker
+
+// Variable to pass into the bfs routine is the current node (puzzle as an array)
+
+
+
+
+function startWorker() {
+    var backTrackMap = null;
     for (var i = 0; i < puzSize; i++) {
         startNode[i] = i;
     }
-    var backTrackMap = bfs();
-    var solutionPath = getNodes(backTrackMap, startNode);
-    console.log(solutionPath);
+    if (typeof (Worker) !== "undefined") {
+        if (typeof (w) == "undefined") {
+            w = new Worker("./js/bfs_solver.js");
+        }
+        Node = tilesToArray();
+        var vars = {
+            'Node': Node
+            , 'puzSize': puzSize
+            , 'nbrMap': nbrMap
+        }
+        w.postMessage(vars);
+        w.onmessage = function (event) {
+            var msg = event.data;
+            backTrackMap = msg['backTrackMap'];
+
+            Soln.innerHTML = "Nodes Checked: " + msg['count'];
+
+            if (backTrackMap != null) {
+                var solutionPath = getNodes(backTrackMap, startNode);
+                soln = findSoln(solutionPath);
+                Soln.innerHTML = "Nodes Checked: " + msg['count'] + "\nSolution: " + soln;
+                solveBtn.style.visibility = 'visible';
+                stopWorker();
+            }
+        };
+
+    } else {
+        Soln.innerHTML = "Sorry, your browser does not support Web Workers...";
+    }
+}
+
+function stopWorker() {
+    w.terminate();
+    w = undefined;
 }
