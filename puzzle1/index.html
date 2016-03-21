@@ -56,13 +56,32 @@
     </label>
     -->
 
-    <!--
-    <section>
+
+    <button id="dbgBtn" onclick="toggleDbg()">Show Debug</button>
+    <section id="dbg" style="visibility:hidden">
         <h1>Debug:</h1>
         <p id='debug'>Debug Messages Here</p>
         <p id='debug1'>Debug Messages Here</p>
+        <p id='debug2'>Debug Messages Here</p>
     </section>
-    -->
+
+    <script>
+        var dbgHidden = false;
+
+        function toggleDbg() {
+            var dbg = document.getElementById("dbg");
+            var dbgBtn = document.getElementById("dbgBtn");
+            dbgHidden = dbgHidden ^ true;
+            if (dbgHidden) {
+                dbg.style.visibility = 'visible';
+                dbgBtn.innerHTML = "Hide Debug";
+            } else {
+                dbg.style.visibility = 'hidden';
+                dbgBtn.innerHTML = "Show Debug";
+            }
+        }
+    </script>
+
 </body>
 
 </html>

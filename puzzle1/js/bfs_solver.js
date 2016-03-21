@@ -13,20 +13,38 @@ onmessage = function (e) {
 
     function bfs(Node) {
         var count = 0;
+        var cur = 0;
+        var dt = 0;
         var nodeQueue = [Node];
         var backTrackMap = {}; // To find solution
         backTrackMap[Node] = null; // Just the start node traces back to null
 
         // Repeatdly remove the first node from the queue
-        while (nodeQueue.length != 0) {
+        while (cur != nodeQueue.length) {
             count++;
+
             if (count % 1000 == 0) {
-                //console.log(count);
+
+
+                msg['debug'] = "<br>Time: " + dt + " milis<br>Queue.length: " + nodeQueue.length + "<br>cur: " + cur + "<br>Map.size: " + Object.keys(backTrackMap).length;
+                dt = 0;
+
                 msg['count'] = count;
                 postMessage(msg);
             }
 
-            Node = nodeQueue.shift(); // In first pass this is just the start node.
+            var t0 = performance.now();
+            Node = nodeQueue[cur];
+            nodeQueue[cur] = null;
+            cur += 1;
+            if (nodeQueue.length - cur < 3 / 4 * nodeQueue.length && nodeQueue.length > 1024) {
+                var tmp = nodeQueue.slice(cur, nodeQueue.length);
+                nodeQueue = tmp;
+                cur = 0;
+            }
+            // Node = nodeQueue.shift(); // In first pass this is just the start node.
+            dt += performance.now() - t0;
+
 
             // Check if we are done
             if (ckNode(Node)) {
@@ -40,12 +58,14 @@ onmessage = function (e) {
             for (var i = 0; i < nbrs.length; i++) {
                 var k = nbrs[i];
                 var tmpNode = nodeswap(Node, zeroIdx, k);
+
                 if (!(tmpNode in backTrackMap)) {
                     backTrackMap[tmpNode] = Node;
                     nodeQueue.push(tmpNode);
                 } else { // Already in backTrack
                     // console.log(newNode + " is already in backTrackMap");
                 }
+
             }
         }
     }

@@ -153,28 +153,34 @@ var Loc = {
 function getLoc(e) {
     mouseX = Math.floor(e.offsetX / c.width * dimention);
     mouseY = Math.floor(e.offsetY / c.height * dimention);
+
     debug = "(" + mouseX + ", " + mouseY + ")";
     debug += "<br> Internal postion = (" + (tiles[pair(mouseX, mouseY)]).x + ", " + (tiles[pair(mouseX, mouseY)]).y + ")";
     debug += "<br> Initial position = (" + tiles[pair(mouseX, mouseY)].x0 + ", " + tiles[pair(mouseX, mouseY)].y0 + ")";
     debug += "<br> Index = " + tiles[pair(mouseX, mouseY)].idx;
     document.getElementById("debug").innerHTML = debug;
+
 }
 
-/*
+
+
+document.getElementById('canvas').addEventListener('mousemove', getLoc, false);
+
+
+document.getElementById('body').addEventListener('mousemove', getPageLoc, false);
+
+
 function getPageLoc(e) {
     debug1 = "Location in the page: <br>"
     debug1 += "(" + e.pageX + ", " + e.pageY + ")";
     document.getElementById("debug1").innerHTML = debug1;
 }
 
-document.getElementById('canvas').addEventListener('mousemove', getLoc, false);
-document.getElementById('body').addEventListener('mousemove', getPageLoc, false);
-*/
 function clickHandler() {
     movePiece(mouseX, mouseY);
     checkAns();
-    debug1 = "Click on: " + "(" + mouseX + ", " + mouseY + ")";
-    document.getElementById("debug1").innerHTML = debug1;
+    // debug1 = "Click on: " + "(" + mouseX + ", " + mouseY + ")";
+    // document.getElementById("debug1").innerHTML = debug1;
 }
 
 document.getElementById('canvas').addEventListener('touchstart'
@@ -236,7 +242,6 @@ function neighbors() {
 
 function setData() {
     Soln.innerHTML = "";
-    Soln.value = "";
     dimention = document.getElementById('dimention').value;
     puzSize = dimention * dimention;
     tileSize = boardSize / dimention;
@@ -308,8 +313,6 @@ function swapTile(j, i) {
     tiles[j] = tmp;
     tiles[j].x = getX(j);
     tiles[j].y = getY(j);
-    //ctx.putImageData(tiles[j].im, getX(j) * tileSize, getY(j) * tileSize);
-    //ctx.putImageData(tiles[i].im, getX(i) * tileSize, getY(i) * tileSize);
     tiles[i].draw();
     tiles[j].draw();
 }
@@ -317,8 +320,6 @@ function swapTile(j, i) {
 // move the (i,j)th piece if it is next to blank
 function movePiece(i, j) {
     var curTile = pair(i, j);
-
-    // console.log("(" + i + ", " + j + ")");
 
     if (blank == pair(i - 1, j)) {
         swapTile(curTile, blank);
@@ -329,7 +330,7 @@ function movePiece(i, j) {
     } else if (blank == pair(i, j + 1)) {
         swapTile(curTile, blank);
     } else {
-        // console.log("(" + i + ", " + j + ") is not adjacent to blank");
+
     }
 }
 
@@ -338,7 +339,6 @@ function movePiece(i, j) {
 function shuffle() {
     cnt = 0;
     Soln.innerHTML = "";
-    Soln.value = "";
     var count = 0;
     for (var i = 1; i < dimention * dimention; i++) {
         var j = Math.ceil(Math.random() * i);
@@ -460,11 +460,13 @@ function startWorker() {
             backTrackMap = msg['backTrackMap'];
 
             Soln.innerHTML = "Nodes Checked: " + msg['count'];
+            document.getElementById("debug2").innerHTML = msg['debug'];
 
             if (backTrackMap != null) {
                 var solutionPath = getNodes(backTrackMap, startNode);
                 soln = findSoln(solutionPath);
                 Soln.innerHTML = "Nodes Checked: " + msg['count'] + "\nSolution: " + soln;
+
                 solveBtn.style.visibility = 'visible';
                 stopWorker();
             }
